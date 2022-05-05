@@ -1,9 +1,12 @@
+import 'package:bmi_calculator/screens/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'reusable_card.dart';
-import 'icon_content.dart';
-import 'constants.dart';
-import 'bottom_navigation.dart';
+import '../components/reusable_card.dart';
+import '../components/icon_content.dart';
+import '../components/constants.dart';
+import '../components/bottom_navigation.dart';
+import '../components/round_icon_button.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
 
 enum Gender {
   male,
@@ -200,35 +203,24 @@ class _InputPageState extends State<InputPage> {
           ),
           BottomNavigation(
             text: "CALCULATE",
-            navigator: () => Navigator.pushNamed(context, '/second'),
+            navigator: () {
+              CalculatorBrain calculatorBrain = CalculatorBrain(
+                height: height,
+                weight: weight,
+              );
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ResultsPage(
+                            bmiResult: calculatorBrain.calculateBMI(),
+                            interpretationText:
+                                calculatorBrain.getInterpretation(),
+                            resultText: calculatorBrain.getResult(),
+                          )));
+            },
           )
         ],
       ),
-    );
-  }
-}
-
-class RoundIconButtom extends StatelessWidget {
-  RoundIconButtom({@required this.icon, @required this.onPressed});
-
-  final IconData icon;
-  final Function onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      child: Icon(
-        icon,
-        color: Colors.white,
-      ),
-      constraints: BoxConstraints.tightFor(
-        width: 56.0,
-        height: 56.0,
-      ),
-      onPressed: onPressed,
-      fillColor: Color(0xFF4C4F5E),
-      shape: CircleBorder(),
-      elevation: 0.0,
     );
   }
 }
